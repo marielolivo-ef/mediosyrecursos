@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enciende la idea · Medios y recursos didácticos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fondo:#070512;
+    --medio:#22e6ff;
+    --recurso:#ff2bd1;
+    --depende:#ffb020;
+    --filamento:#ffd166;
+    --nivel:#b6ff3d;
+    --texto:#e9e6ff;
+    --tenue:#8f88b8;
+    --linea:rgba(140,120,255,.22);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(900px 600px at 50% -10%, #1a0f4d 0%, transparent 60%),
+      radial-gradient(700px 500px at 110% 100%, #2a0a3d 0%, transparent 55%),
+      var(--fondo);
+    color:var(--texto);
+    font-family:"Space Grotesk","Segoe UI",system-ui,sans-serif;
+    min-height:100vh;
+  }
+  .marco{max-width:1320px;margin:0 auto;padding:22px 18px 60px}
+
+  header.tope{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 26px;margin-bottom:20px}
+  h1{
+    font-family:"Outfit","Segoe UI",sans-serif;font-weight:900;font-size:clamp(28px,4.6vw,52px);
+    line-height:.95;letter-spacing:-.02em;margin:0;color:#fff;
+    text-shadow:0 0 18px rgba(34,230,255,.55),0 0 46px rgba(255,43,209,.35);
+  }
+  .bajada{margin:6px 0 0;color:var(--tenue);font-size:15px;max-width:58ch}
+  .marcador{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+  .dato{border:1px solid var(--linea);border-radius:14px;padding:8px 14px;min-width:88px;background:rgba(255,255,255,.03);text-align:center}
+  .dato b{display:block;font-family:"Outfit",sans-serif;font-size:26px;line-height:1;font-weight:900}
+  .dato span{font-size:11px;color:var(--tenue)}
+  .dato.v b{color:var(--nivel)}
+
+  .tablero{display:grid;grid-template-columns:310px minmax(0,1fr) 310px;gap:18px;align-items:start}
+  .panel{border:1px solid var(--linea);border-radius:20px;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015))}
+  .panel h2{font-family:"Outfit",sans-serif;font-size:16px;margin:0 0 10px;font-weight:700}
+  .consigna{font-size:12px;line-height:1.5;color:var(--tenue);border-left:2px solid var(--filamento);padding-left:10px;margin:0 0 12px}
+
+  label{display:block;font-size:12px;color:var(--tenue);margin:12px 0 5px}
+  input[type=text]{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--linea);background:rgba(0,0,0,.35);color:var(--texto);font-family:inherit;font-size:15px}
+  input[type=text]:focus{outline:2px solid var(--medio);outline-offset:1px}
+  .tipos{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:6px}
+  .tipo{cursor:pointer;border:1px solid var(--linea);border-radius:12px;padding:9px 4px;text-align:center;font-size:12px;font-weight:600;background:rgba(0,0,0,.3);transition:.18s}
+  .tipo small{display:block;font-weight:400;font-size:9.5px;color:var(--tenue);margin-top:3px;line-height:1.25}
+  .tipo[aria-pressed=true][data-tipo=medio]{border-color:var(--medio);color:var(--medio);box-shadow:0 0 16px rgba(34,230,255,.3) inset}
+  .tipo[aria-pressed=true][data-tipo=recurso]{border-color:var(--recurso);color:var(--recurso);box-shadow:0 0 16px rgba(255,43,209,.3) inset}
+  .tipo[aria-pressed=true][data-tipo=depende]{border-color:var(--depende);color:var(--depende);box-shadow:0 0 16px rgba(255,176,32,.3) inset}
+  .tipo:focus-visible{outline:2px solid #fff}
+
+  button.accion{width:100%;margin-top:14px;padding:13px;border-radius:14px;border:0;cursor:pointer;font-family:"Outfit",sans-serif;font-weight:800;font-size:15px;color:#0a0618;background:linear-gradient(100deg,var(--medio),#a97bff 55%,var(--recurso));box-shadow:0 0 26px rgba(169,123,255,.4);transition:transform .12s}
+  button.accion:hover{transform:translateY(-1px)}
+  button.accion:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  .secundario{width:100%;margin-top:8px;padding:10px;border-radius:12px;cursor:pointer;font-family:inherit;font-size:13px;background:transparent;color:var(--tenue);border:1px solid var(--linea)}
+  .secundario:hover{color:var(--texto);border-color:var(--medio)}
+  .secundario:disabled{opacity:.35;cursor:not-allowed}
+  .aviso{min-height:18px;font-size:12px;color:var(--filamento);margin-top:8px}
+  .herramientas{margin-top:16px;border-top:1px dashed var(--linea);padding-top:10px}
+
+  /* reloj */
+  .reloj{display:flex;align-items:center;gap:10px;margin-top:10px}
+  .reloj .cuenta{font-family:"Outfit",sans-serif;font-weight:900;font-size:30px;letter-spacing:.02em;color:var(--filamento);min-width:86px}
+  .reloj select{background:rgba(0,0,0,.4);color:var(--texto);border:1px solid var(--linea);border-radius:10px;padding:8px;font-family:inherit;font-size:13px}
+  .reloj.rojo .cuenta{color:var(--recurso);animation:latir 1s infinite}
+  @keyframes latir{50%{opacity:.4}}
+
+  /* Bombillo */
+  .escena{position:relative;display:flex;flex-direction:column;align-items:center}
+  svg#bombillo{width:100%;max-width:600px;height:auto;display:block}
+  .palabra{cursor:default;transition:opacity .35s}
+  .palabra.apagada{opacity:.1}
+  .nueva{animation:chispa .9s ease-out}
+  @keyframes chispa{0%{opacity:0;transform:scale(.4)}60%{opacity:1;transform:scale(1.18)}100%{transform:scale(1)}}
+
+  .leyenda{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:4px 0 10px}
+  .chip{cursor:pointer;border:1px solid var(--linea);border-radius:99px;padding:6px 13px;font-size:12.5px;background:rgba(0,0,0,.3);display:flex;gap:7px;align-items:center}
+  .chip i{width:9px;height:9px;border-radius:99px;display:inline-block}
+  .chip b{font-family:"Outfit",sans-serif;font-weight:800}
+  .chip[aria-pressed=true]{border-color:#fff;color:#fff;box-shadow:0 0 14px rgba(255,255,255,.18)}
+  .chip.m i{background:var(--medio)} .chip.r i{background:var(--recurso)} .chip.d i{background:var(--depende)}
+
+  .barra{width:100%;max-width:600px}
+  .barra .riel{height:12px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden;border:1px solid var(--linea)}
+  .barra .lleno{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--medio),var(--nivel));box-shadow:0 0 18px var(--nivel);transition:width .6s cubic-bezier(.2,.9,.2,1)}
+  .barra .pie{display:flex;justify-content:space-between;font-size:12px;color:var(--tenue);margin-top:6px;gap:10px}
+  .nivelNombre{color:var(--nivel);font-weight:700}
+
+  /* Listas */
+  .lista{list-style:none;margin:0;padding:0;max-height:220px;overflow:auto}
+  .lista li{padding:8px 10px;border-radius:10px;font-size:13px;margin-bottom:5px;background:rgba(255,255,255,.04)}
+  .fila{display:flex;justify-content:space-between;gap:8px;align-items:center}
+  .lista .cuenta{font-family:"Outfit",sans-serif;font-weight:800;font-size:12px;color:var(--filamento)}
+  .pill{font-size:10px;padding:2px 7px;border-radius:99px;border:1px solid currentColor}
+  .pill.medio{color:var(--medio)} .pill.recurso{color:var(--recurso)} .pill.depende{color:var(--depende)}
+  .razon{display:block;color:var(--tenue);font-size:11.5px;line-height:1.4;margin-top:4px;font-style:italic}
+  .movida{color:var(--nivel);font-size:11px}
+  .vacio{font-size:13px;color:var(--tenue);line-height:1.5;background:none!important}
+  .quitar{background:transparent;border:0;color:var(--tenue);cursor:pointer;font-size:15px;line-height:1;padding:2px 4px;border-radius:6px}
+  .quitar:hover{color:var(--recurso);background:rgba(255,43,209,.12)}
+  .mover{display:none;gap:6px;margin-top:7px}
+  body.fase2 .mover{display:flex}
+  .mover button{flex:1;font-size:11px;padding:5px;border-radius:8px;cursor:pointer;background:rgba(0,0,0,.35);border:1px solid var(--linea);color:var(--tenue);font-family:inherit}
+  .mover button:hover{color:#fff;border-color:#fff}
+  .mover button[disabled]{opacity:.25;cursor:default}
+
+  .definiciones{margin-top:14px;font-size:13px;line-height:1.55;color:var(--tenue);border-top:1px dashed var(--linea);padding-top:12px}
+  .definiciones b{color:var(--texto)}
+  .bloqueado{filter:blur(6px);user-select:none}
+  .llave{font-size:12px;color:var(--filamento);margin-top:8px}
+  .cierre{display:none;margin-top:14px;border-top:1px dashed var(--linea);padding-top:12px}
+  body.fase2 .cierre{display:block}
+
+  /* Capas */
+  .capa{position:fixed;inset:0;background:rgba(5,2,18,.88);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px;z-index:30}
+  .capa.abierta{display:flex}
+  .tarjeta{width:min(580px,100%);border:1px solid var(--linea);border-radius:24px;padding:26px;background:linear-gradient(180deg,#150c33,#0a0620);text-align:center;box-shadow:0 0 60px rgba(169,123,255,.35);max-height:90vh;overflow:auto}
+  .tarjeta .palabraReto{font-family:"Outfit",sans-serif;font-weight:900;font-size:clamp(28px,6vw,44px);margin:10px 0 18px;color:#fff;text-shadow:0 0 24px rgba(34,230,255,.6)}
+  .opciones{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .opciones button{padding:15px 6px;border-radius:16px;cursor:pointer;font-family:"Outfit",sans-serif;font-weight:800;font-size:15px;background:rgba(0,0,0,.4);color:var(--texto);border:1px solid var(--linea)}
+  .opciones button:hover{border-color:#fff}
+  .veredicto{margin-top:18px;font-size:14px;line-height:1.6;min-height:76px}
+  .ok{color:var(--nivel);font-weight:700}
+  .no{color:var(--recurso);font-weight:700}
+
+  footer.pie{margin-top:26px;font-size:12px;color:var(--tenue);text-align:center}
+  .estado{font-size:11px;color:var(--tenue);margin-top:10px;text-align:center}
+
+  .puntos{display:flex;gap:12px;justify-content:center;margin-bottom:18px}
+  .puntos i{width:14px;height:14px;border-radius:99px;border:1px solid var(--linea);background:rgba(0,0,0,.4)}
+  .puntos i.on{background:var(--medio);border-color:var(--medio);box-shadow:0 0 14px var(--medio)}
+  .teclado{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .teclado button{padding:16px;border-radius:14px;cursor:pointer;font-family:"Outfit",sans-serif;font-weight:700;font-size:20px;background:rgba(0,0,0,.4);color:var(--texto);border:1px solid var(--linea)}
+  .teclado button:hover{border-color:var(--medio);color:var(--medio)}
+  .teclado button.mal{border-color:var(--recurso);color:var(--recurso)}
+
+  /* Modo estudiante */
+  body.estudiante .herramientas{display:none}
+  body.estudiante .quitar{display:none}
+  .rol{display:inline-block;font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid var(--linea);color:var(--tenue);margin-top:8px}
+  .cerrado{border-left-color:var(--recurso)!important;color:var(--recurso)!important}
+  .filaSala{display:flex;gap:8px}
+  .filaSala input{flex:1}
+  .filaSala button{margin:0;width:auto;padding:10px 14px}
+
+  /* Modo proyector */
+  body.proyector .panel,body.proyector .bajada,body.proyector footer.pie{display:none}
+  body.proyector .tablero{grid-template-columns:1fr}
+  body.proyector svg#bombillo{max-width:min(96vw,860px)}
+  body.proyector .marco{padding-top:10px}
+  .salirProy{display:none;position:fixed;top:14px;right:14px;z-index:40;width:auto;margin:0;padding:9px 16px}
+  body.proyector .salirProy{display:block}
+
+  @media (max-width:1060px){
+    .tablero{grid-template-columns:1fr}
+    .escena{order:-1}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<button class="secundario salirProy" id="salirProy">Salir del modo proyector</button>
+<div class="marco">
+
+  <header class="tope">
+    <div>
+      <h1>Enciende la idea</h1>
+      <p class="bajada">Cada palabra es energía para el bombillo. Escribe una palabra, decide si es medio, recurso o si depende del uso, y firma con tu nombre.</p>
+    </div>
+    <div class="marcador">
+      <div class="dato v"><b id="nTotal">0</b><span>palabras</span></div>
+      <div class="dato"><b id="nGente">0</b><span>participantes</span></div>
+      <div class="dato"><b id="nCambios">0</b><span>reclasificadas</span></div>
+    </div>
+  </header>
+
+  <div class="tablero">
+
+    <!-- Izquierda -->
+    <section class="panel">
+      <h2>Aporta tu palabra</h2>
+      <p class="consigna">Solo vale algo que hayas visto o usado en una clase real de Educación Física esta semana.</p>
+
+      <label for="nombre">Tu nombre</label>
+      <input type="text" id="nombre" placeholder="Ej. Laura M." maxlength="24" autocomplete="off">
+
+      <label for="palabra">Palabra o frase corta</label>
+      <input type="text" id="palabra" placeholder="Ej. proyector, aro, silbato…" maxlength="28" autocomplete="off">
+
+      <label for="razon">¿Por qué? (opcional, una línea)</label>
+      <input type="text" id="razon" placeholder="Ej. lo usé para marcar las estaciones" maxlength="90" autocomplete="off">
+
+      <label>¿Qué es?</label>
+      <div class="tipos">
+        <div class="tipo" data-tipo="medio" role="button" tabindex="0" aria-pressed="true">Medio<small>por dónde llega</small></div>
+        <div class="tipo" data-tipo="recurso" role="button" tabindex="0" aria-pressed="false">Recurso<small>con qué se aprende</small></div>
+        <div class="tipo" data-tipo="depende" role="button" tabindex="0" aria-pressed="false">Depende<small>según el uso</small></div>
+      </div>
+
+      <button class="accion" id="btnEnviar">Encender</button>
+      <p class="aviso" id="aviso" aria-live="polite"></p>
+
+      <div class="herramientas">
+        <h2 style="margin-bottom:4px">Control de la clase</h2>
+        <label for="sala">Código del grupo</label>
+        <div class="filaSala">
+          <input type="text" id="sala" maxlength="16" placeholder="Ej. EF2A" autocomplete="off">
+          <button class="secundario" id="btnSala">Aplicar</button>
+        </div>
+        <button class="secundario" id="btnEnlace">Copiar el enlace de los estudiantes</button>
+        <button class="secundario" id="btnAbrir" style="border-color:var(--nivel);color:var(--texto)">Cerrar los aportes</button>
+        <div class="reloj" id="reloj">
+          <span class="cuenta" id="cuenta">--:--</span>
+          <select id="minutos" aria-label="Minutos de la lluvia">
+            <option value="2">2 min</option>
+            <option value="3" selected>3 min</option>
+            <option value="5">5 min</option>
+          </select>
+          <button class="secundario" id="btnTiempo" style="margin:0">Iniciar</button>
+        </div>
+        <button class="secundario" id="btnFase">Abrir fase 2: reclasificar</button>
+        <button class="secundario" id="btnReto">Ronda relámpago</button>
+        <button class="secundario" id="btnProy">Modo proyector</button>
+        <button class="secundario" id="btnPng">Guardar el bombillo (PNG)</button>
+        <button class="secundario" id="btnCsv">Descargar el acta (CSV)</button>
+        <button class="secundario" id="btnReset">Reiniciar la actividad</button>
+        <p class="estado" id="estado">Conectando el tablero compartido…</p>
+      </div>
+      <p style="text-align:center;margin:0"><span class="rol" id="rol">—</span></p>
+    </section>
+
+    <!-- Centro -->
+    <section class="escena">
+      <svg id="bombillo" viewBox="0 0 460 620" role="img" aria-label="Bombillo que se llena con las palabras del grupo">
+        <defs>
+          <radialGradient id="halo" cx="50%" cy="34%" r="55%">
+            <stop offset="0%" stop-color="#ffe9a8" stop-opacity=".55"/>
+            <stop offset="55%" stop-color="#a97bff" stop-opacity=".18"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="rosca" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#5a5f7a"/><stop offset="50%" stop-color="#2b2f45"/><stop offset="100%" stop-color="#484d68"/>
+          </linearGradient>
+          <filter id="brillo" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="9" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <circle id="aura" cx="230" cy="215" r="215" fill="url(#halo)" opacity="0"/>
+        <path d="M175 355 C185 400 175 415 168 440 L292 440 C285 415 275 400 285 355 Z" fill="#141033" stroke="#4a4570" stroke-width="2"/>
+        <rect x="163" y="440" width="134" height="26" rx="9" fill="url(#rosca)"/>
+        <rect x="167" y="470" width="126" height="22" rx="9" fill="url(#rosca)"/>
+        <rect x="172" y="496" width="116" height="20" rx="9" fill="url(#rosca)"/>
+        <path d="M196 520 L264 520 L246 546 L214 546 Z" fill="#2b2f45"/>
+        <circle cx="230" cy="215" r="178" fill="rgba(120,90,255,.07)" stroke="rgba(190,170,255,.35)" stroke-width="3"/>
+        <circle cx="230" cy="215" r="178" fill="none" stroke="#22e6ff" stroke-width="1.5" opacity=".25"/>
+        <path d="M120 140 C140 95 185 66 225 60" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" opacity=".13"/>
+        <g id="filamento" opacity=".28">
+          <path d="M198 352 L198 300 Q198 288 210 288" fill="none" stroke="#8c86b5" stroke-width="3" stroke-linecap="round"/>
+          <path d="M262 352 L262 300 Q262 288 250 288" fill="none" stroke="#8c86b5" stroke-width="3" stroke-linecap="round"/>
+          <path id="hilo" d="M210 288 L216 268 L224 292 L232 268 L240 292 L248 268 L250 288" fill="none" stroke="#ffd166" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <g id="nube"></g>
+      </svg>
+
+      <div class="leyenda">
+        <div class="chip m" id="chipMedio" role="button" tabindex="0" aria-pressed="false"><i></i>Medios <b id="nMedios">0</b></div>
+        <div class="chip r" id="chipRecurso" role="button" tabindex="0" aria-pressed="false"><i></i>Recursos <b id="nRecursos">0</b></div>
+        <div class="chip d" id="chipDepende" role="button" tabindex="0" aria-pressed="false"><i></i>Depende <b id="nDepende">0</b></div>
+      </div>
+
+      <div class="barra">
+        <div class="riel"><div class="lleno" id="lleno"></div></div>
+        <div class="pie">
+          <span>Nivel: <span class="nivelNombre" id="nivelNombre">Chispa</span></span>
+          <span id="faltan">Faltan 6 palabras para el próximo nivel</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Derecha -->
+    <section class="panel">
+      <h2>Quiénes encendieron</h2>
+      <ul class="lista" id="listaGente"><li class="vacio">Todavía nadie. La primera palabra vale doble energía.</li></ul>
+
+      <h2 style="margin-top:16px">Palabras en el aire</h2>
+      <ul class="lista" id="listaPalabras"><li class="vacio">El bombillo está apagado.</li></ul>
+
+      <div class="definiciones">
+        <div id="defs" class="bloqueado">
+          <p style="margin:0 0 8px"><b>Medio didáctico:</b> el canal o soporte por el que viaja el mensaje: la pizarra, el video, el audio, la plataforma, el propio cuerpo del docente cuando demuestra.</p>
+          <p style="margin:0 0 8px"><b>Recurso didáctico:</b> todo material o elemento que se usa con intención pedagógica para facilitar el aprendizaje: conos, aros, una ficha, una canción, el patio.</p>
+          <p style="margin:0"><b>La clave:</b> muchos objetos son uno u otro según la función que el docente les dé. Por eso existe la casilla “depende”.</p>
+        </div>
+        <p class="llave" id="llave">Se revela al llegar a 10 palabras. Primero lo construye el grupo.</p>
+      </div>
+
+      <div class="cierre">
+        <h2 style="margin-bottom:4px">Tu definición en una frase</h2>
+        <p class="consigna" style="border-color:var(--nivel)">Después de ver el bombillo completo: ¿qué diferencia un medio de un recurso?</p>
+        <input type="text" id="fraseAutor" placeholder="Tu nombre" maxlength="24" autocomplete="off">
+        <input type="text" id="fraseTexto" placeholder="Escribe tu definición" maxlength="160" autocomplete="off" style="margin-top:8px">
+        <button class="secundario" id="btnFrase" style="border-color:var(--nivel);color:var(--texto)">Guardar mi definición</button>
+        <ul class="lista" id="listaFrases" style="margin-top:10px"></ul>
+      </div>
+    </section>
+  </div>
+
+  <footer class="pie">Medios y recursos didácticos para la enseñanza y el aprendizaje · Actividad de apertura
+    <br><button class="secundario" id="btnDocente" style="max-width:180px;margin:10px auto 0">Soy el docente</button>
+  </footer>
+</div>
+
+<!-- PIN del docente -->
+<div class="capa" id="capaPin">
+  <div class="tarjeta" style="max-width:360px">
+    <h2 style="font-family:'Outfit',sans-serif;margin:0 0 4px;font-size:22px">Modo docente</h2>
+    <p style="color:var(--tenue);font-size:13px;margin:0 0 14px">Escribe el PIN de cuatro dígitos.</p>
+    <div class="puntos" id="puntosPin"><i></i><i></i><i></i><i></i></div>
+    <div class="teclado" id="teclado">
+      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+      <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+      <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+      <button data-k="borrar">←</button><button data-k="0">0</button><button data-k="cerrar">✕</button>
+    </div>
+    <p class="aviso" id="avisoPin" aria-live="polite"></p>
+  </div>
+</div>
+
+<!-- Reiniciar -->
+<div class="capa" id="capaReset">
+  <div class="tarjeta" style="text-align:left">
+    <h2 style="font-family:'Outfit',sans-serif;margin:0 0 6px;font-size:22px">Reiniciar la actividad</h2>
+    <p style="color:var(--tenue);font-size:13px;margin:0 0 18px" id="resumenReset">—</p>
+    <button class="secundario" id="resetGuardar" style="text-align:left;padding:14px;margin-top:0"><b style="color:var(--texto)">Guardar el acta y vaciar</b><br><span>Descarga el CSV con palabras, razones y definiciones, y deja el bombillo listo para el próximo grupo.</span></button>
+    <button class="secundario" id="resetVaciar" style="text-align:left;padding:14px"><b style="color:var(--texto)">Vaciar sin guardar</b><br><span>Borra palabras, participantes y definiciones. No se puede deshacer.</span></button>
+    <button class="secundario" id="resetFase" style="text-align:left;padding:14px"><b style="color:var(--texto)">Volver a la fase 1</b><br><span>Cierra la reclasificación y el cierre escrito, conserva las palabras.</span></button>
+    <button class="secundario" id="resetPuntos" style="text-align:left;padding:14px"><b style="color:var(--texto)">Reiniciar solo la ronda relámpago</b><br><span>Pone los aciertos en cero.</span></button>
+    <button class="secundario" id="resetCancelar" style="border-color:var(--medio);color:var(--texto);margin-top:14px">Cancelar</button>
+    <p class="aviso" id="avisoReset" aria-live="polite"></p>
+  </div>
+</div>
+
+<!-- Ronda relámpago -->
+<div class="capa" id="capaReto">
+  <div class="tarjeta">
+    <p style="margin:0;color:var(--tenue);font-size:13px">Ronda relámpago · aciertos: <b id="puntos">0</b></p>
+    <div class="palabraReto" id="palabraReto">—</div>
+    <div class="opciones">
+      <button data-r="medio" style="color:var(--medio)">Medio</button>
+      <button data-r="recurso" style="color:var(--recurso)">Recurso</button>
+      <button data-r="depende" style="color:var(--depende)">Depende</button>
+    </div>
+    <div class="veredicto" id="veredicto"></div>
+    <button class="secundario" id="btnCerrarReto">Volver al bombillo</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const SVGNS="http://www.w3.org/2000/svg";
+  const BASE="bombillo-medios-recursos:v2";
+  const params=new URLSearchParams((location.hash||"").replace(/^#/,""));
+  let SALA=(params.get("sala")||"general").replace(/[^A-Za-z0-9_-]/g,"").slice(0,16)||"general";
+  const PIN="1230";
+  let docente=false;
+  let CLAVE=BASE+":"+SALA;
+  const CX=230, CY=205, R=158;
+  const COLOR={medio:"#22e6ff",recurso:"#ff2bd1",depende:"#ffb020"};
+  const SOMBRA={medio:"rgba(34,230,255,.85)",recurso:"rgba(255,43,209,.85)",depende:"rgba(255,176,32,.85)"};
+
+  const estado={palabras:[],frases:[],fase:1,abierto:true,compartido:false,ultimoId:null,filtro:null,tiempoAgotado:false};
+
+  /* ---------- almacenamiento ---------- */
+  async function leer(){
+    if(!window.storage) return null;
+    try{
+      const r=await window.storage.get(CLAVE,true);
+      if(!r||!r.value) return {palabras:[],frases:[],fase:1,abierto:true};
+      const d=JSON.parse(r.value);
+      return {palabras:d.palabras||[],frases:d.frases||[],fase:d.fase||1,abierto:d.abierto!==false};
+    }catch(e){ return {palabras:[],frases:[],fase:1,abierto:true}; }
+  }
+  function instantanea(){ return {palabras:estado.palabras,frases:estado.frases,fase:estado.fase,abierto:estado.abierto}; }
+  async function guardar(){
+    if(!estado.compartido) return;
+    try{ await window.storage.set(CLAVE,JSON.stringify(instantanea()),true); }catch(e){}
+  }
+  async function fresco(){
+    if(!estado.compartido) return;
+    const d=await leer();
+    if(d){ estado.palabras=d.palabras; estado.frases=d.frases; estado.abierto=d.abierto; if(d.fase>estado.fase) estado.fase=d.fase; }
+  }
+
+  const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+  const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+  const escapar=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  const NIVELES=[{min:0,nombre:"Chispa"},{min:6,nombre:"Filamento tibio"},{min:12,nombre:"Luz encendida"},{min:20,nombre:"Idea brillante"},{min:30,nombre:"Aula iluminada"}];
+
+  /* ---------- nube ---------- */
+  function dibujarNube(){
+    const nube=document.getElementById("nube");
+    nube.innerHTML="";
+    const ordenadas=[...estado.palabras].sort((a,b)=>b.reps-a.reps||a.creada-b.creada);
+    const puestas=[];
+    ordenadas.forEach(p=>{
+      const base=p.texto.length>14?15:p.texto.length>9?18:21;
+      const fs=Math.min(34, base+(p.reps-1)*5);
+      const t=document.createElementNS(SVGNS,"text");
+      t.setAttribute("class","palabra"+(p.id===estado.ultimoId?" nueva":"")+(estado.filtro&&estado.filtro!==p.tipo?" apagada":""));
+      t.setAttribute("text-anchor","middle");
+      t.setAttribute("font-size",fs);
+      t.setAttribute("font-family","Outfit, Segoe UI, sans-serif");
+      t.setAttribute("font-weight","700");
+      t.setAttribute("fill",COLOR[p.tipo]);
+      t.style.filter="drop-shadow(0 0 8px "+SOMBRA[p.tipo]+")";
+      t.textContent=p.texto;
+      const tit=document.createElementNS(SVGNS,"title");
+      const razones=p.autores.filter(a=>a.r).map(a=>a.n+": "+a.r).join(" · ");
+      tit.textContent=p.texto+" · "+p.tipo+" · "+p.autores.map(a=>a.n).join(", ")+(razones?" · "+razones:"");
+      t.appendChild(tit);
+      nube.appendChild(t);
+      let bb; try{ bb=t.getBBox(); }catch(e){ bb={width:p.texto.length*fs*0.55,height:fs}; }
+      const an=bb.width+10, al=bb.height+6;
+      let ok=null;
+      for(let i=0;i<1600;i++){
+        const rad=5.2*Math.sqrt(i), ang=i*2.399963;
+        const x=CX+rad*Math.cos(ang), y=CY+rad*Math.sin(ang)*0.94;
+        const rct={x:x-an/2,y:y-al/2,w:an,h:al};
+        if(!dentro(rct)) continue;
+        if(puestas.some(q=>choca(q,rct))) continue;
+        ok={x,y}; puestas.push(rct); break;
+      }
+      if(!ok){ t.remove(); return; }
+      t.setAttribute("x",ok.x); t.setAttribute("y",ok.y+bb.height*0.33);
+    });
+  }
+  const dentro=r=>[[r.x,r.y],[r.x+r.w,r.y],[r.x,r.y+r.h],[r.x+r.w,r.y+r.h]].every(([x,y])=>Math.hypot(x-CX,y-CY)<R);
+  const choca=(a,b)=>!(a.x+a.w<b.x||b.x+b.w<a.x||a.y+a.h<b.y||b.y+b.h<a.y);
+
+  /* ---------- pintar ---------- */
+  function pintar(){
+    const cuenta=t=>estado.palabras.filter(p=>p.tipo===t).length;
+    document.getElementById("nTotal").textContent=estado.palabras.length;
+    document.getElementById("nMedios").textContent=cuenta("medio");
+    document.getElementById("nRecursos").textContent=cuenta("recurso");
+    document.getElementById("nDepende").textContent=cuenta("depende");
+    const gente=new Set(); estado.palabras.forEach(p=>p.autores.forEach(a=>gente.add(a.n)));
+    document.getElementById("nGente").textContent=gente.size;
+    document.getElementById("nCambios").textContent=estado.palabras.filter(p=>p.tipo!==p.tipoInicial).length;
+
+    const fuerza=estado.tiempoAgotado?0:Math.min(1,estado.palabras.length/24);
+    document.getElementById("aura").setAttribute("opacity",(fuerza*0.95).toFixed(2));
+    const fil=document.getElementById("filamento");
+    fil.setAttribute("opacity",(0.28+fuerza*0.72).toFixed(2));
+    const hilo=document.getElementById("hilo");
+    hilo.setAttribute("stroke-width",(3.5+fuerza*2.5).toFixed(1));
+    hilo.style.filter=fuerza>0.15?"url(#brillo)":"none";
+
+    const n=estado.palabras.length;
+    let idx=0; NIVELES.forEach((v,i)=>{ if(n>=v.min) idx=i; });
+    const sig=NIVELES[idx+1];
+    document.getElementById("nivelNombre").textContent=NIVELES[idx].nombre;
+    document.getElementById("faltan").textContent=sig?("Faltan "+(sig.min-n)+" palabras para "+sig.nombre):"Nivel máximo del grupo";
+    const piso=NIVELES[idx].min, tope=sig?sig.min:piso;
+    document.getElementById("lleno").style.width=Math.max(4,Math.min(100,sig?((n-piso)/(tope-piso))*100:100))+"%";
+
+    const conteo={};
+    estado.palabras.forEach(p=>p.autores.forEach(a=>conteo[a.n]=(conteo[a.n]||0)+1));
+    const orden=Object.entries(conteo).sort((a,b)=>b[1]-a[1]);
+    document.getElementById("listaGente").innerHTML = orden.length
+      ? orden.map(([a,c],i)=>`<li><div class="fila"><b>${escapar(a)}</b><span class="cuenta">${i===0&&c>1?"⚡ ":""}${c}</span></div></li>`).join("")
+      : '<li class="vacio">Todavía nadie. La primera palabra vale doble energía.</li>';
+
+    const lp=document.getElementById("listaPalabras");
+    const ord=[...estado.palabras].sort((a,b)=>b.reps-a.reps||b.creada-a.creada)
+      .filter(p=>!estado.filtro||p.tipo===estado.filtro);
+    lp.innerHTML = ord.length ? ord.map(p=>{
+      const razones=p.autores.filter(a=>a.r).map(a=>escapar(a.r)+" — "+escapar(a.n)).join("<br>");
+      const movida=p.tipo!==p.tipoInicial?`<span class="movida">↺ era ${p.tipoInicial}</span>`:"";
+      return `<li>
+        <div class="fila"><b>${escapar(p.texto)}</b>
+          <span><span class="pill ${p.tipo}">${p.tipo}</span> <span class="cuenta">×${p.reps}</span>
+          <button class="quitar" data-id="${p.id}" title="Quitar" aria-label="Quitar ${escapar(p.texto)}">×</button></span></div>
+        ${razones?`<span class="razon">${razones}</span>`:""}${movida}
+        <div class="mover">
+          ${["medio","recurso","depende"].map(t=>`<button data-mv="${p.id}" data-t="${t}" ${p.tipo===t?"disabled":""}>${t}</button>`).join("")}
+        </div></li>`;
+    }).join("") : '<li class="vacio">Sin palabras que mostrar.</li>';
+    lp.querySelectorAll(".quitar").forEach(b=>b.addEventListener("click",()=>quitarPalabra(b.dataset.id)));
+    lp.querySelectorAll("[data-mv]").forEach(b=>b.addEventListener("click",()=>reclasificar(b.dataset.mv,b.dataset.t)));
+
+    document.getElementById("listaFrases").innerHTML = estado.frases.length
+      ? estado.frases.map(f=>`<li><b>${escapar(f.autor)}</b><span class="razon">${escapar(f.texto)}</span></li>`).join("")
+      : '<li class="vacio">Aún no hay definiciones escritas.</li>';
+
+    const defs=document.getElementById("defs");
+    const abierto=estado.palabras.length>=10||estado.fase===2;
+    defs.classList.toggle("bloqueado",!abierto);
+    document.getElementById("llave").textContent = abierto
+      ? "Comparen: ¿coincide con lo que clasificaron?"
+      : "Se revela al llegar a 10 palabras. Faltan "+(10-estado.palabras.length)+".";
+    document.body.classList.toggle("fase2",estado.fase===2);
+    document.getElementById("btnFase").textContent = estado.fase===2?"Fase 2 abierta":"Abrir fase 2: reclasificar";
+
+    const cerrado=!estado.abierto||estado.tiempoAgotado;
+    document.getElementById("btnEnviar").disabled=cerrado;
+    document.getElementById("btnEnviar").textContent=cerrado?"Aportes cerrados":"Encender";
+    const cons=document.querySelector(".consigna");
+    cons.classList.toggle("cerrado",cerrado);
+    cons.textContent=cerrado
+      ? "La lluvia está cerrada. Sigue el bombillo en pantalla."
+      : "Solo vale algo que hayas visto o usado en una clase real de Educación Física esta semana.";
+    const btnAbrir=document.getElementById("btnAbrir");
+    if(btnAbrir) btnAbrir.textContent=estado.abierto?"Cerrar los aportes":"Abrir los aportes";
+
+    dibujarNube();
+  }
+
+  /* ---------- aportar ---------- */
+  let tipoSel="medio";
+  document.querySelectorAll(".tipo").forEach(el=>{
+    const elegir=()=>{ tipoSel=el.dataset.tipo; document.querySelectorAll(".tipo").forEach(o=>o.setAttribute("aria-pressed",String(o===el))); };
+    el.addEventListener("click",elegir);
+    el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();elegir();} });
+  });
+
+  async function aportar(){
+    const aviso=document.getElementById("aviso");
+    await fresco();
+    if(!estado.abierto||estado.tiempoAgotado){ pintar(); aviso.textContent="El docente cerró los aportes."; return; }
+    const nombre=document.getElementById("nombre").value.trim();
+    const palabra=document.getElementById("palabra").value.trim();
+    const razon=document.getElementById("razon").value.trim();
+    if(!nombre){ aviso.textContent="Escribe tu nombre para firmar tu aporte."; return; }
+    if(palabra.length<2){ aviso.textContent="Escribe una palabra de al menos dos letras."; return; }
+
+    await fresco();
+    const existente=estado.palabras.find(p=>norm(p.texto)===norm(palabra));
+    if(existente){
+      existente.reps+=1;
+      if(!existente.autores.some(a=>a.n===nombre)) existente.autores.push({n:nombre,r:razon});
+      estado.ultimoId=existente.id;
+      aviso.textContent="Esa palabra ya estaba: crece y suma tu nombre.";
+    }else{
+      const nueva={id:Date.now()+"-"+Math.random().toString(36).slice(2,7),texto:cap(palabra),tipo:tipoSel,tipoInicial:tipoSel,autores:[{n:nombre,r:razon}],reps:1,creada:Date.now()};
+      estado.palabras.push(nueva);
+      estado.ultimoId=nueva.id;
+      aviso.textContent="¡Encendida! Pasa el turno.";
+    }
+    await guardar();
+    document.getElementById("palabra").value="";
+    document.getElementById("razon").value="";
+    document.getElementById("palabra").focus();
+    pintar();
+    setTimeout(()=>{ aviso.textContent=""; },4000);
+  }
+  document.getElementById("btnEnviar").addEventListener("click",aportar);
+  ["palabra","razon"].forEach(id=>document.getElementById(id).addEventListener("keydown",e=>{ if(e.key==="Enter") aportar(); }));
+
+  /* ---------- control del docente ---------- */
+  function enlaceEstudiantes(){
+    return location.origin+location.pathname+location.search+"#sala="+SALA;
+  }
+  const btnEnlace=document.getElementById("btnEnlace");
+  if(btnEnlace) btnEnlace.addEventListener("click",async()=>{
+    const url=enlaceEstudiantes();
+    try{ await navigator.clipboard.writeText(url); document.getElementById("aviso").textContent="Enlace copiado. Compártelo con el grupo."; }
+    catch(e){ prompt("Copia este enlace para los estudiantes:",url); }
+  });
+  const inpSala=document.getElementById("sala");
+  if(inpSala){
+    inpSala.value=SALA;
+    document.getElementById("btnSala").addEventListener("click",async()=>{
+      const v=inpSala.value.replace(/[^A-Za-z0-9_-]/g,"").slice(0,16)||"general";
+      SALA=v; inpSala.value=v; CLAVE=BASE+":"+SALA;
+      location.hash="sala="+SALA;
+      const d=await leer();
+      if(d){ estado.palabras=d.palabras; estado.frases=d.frases; estado.fase=d.fase; estado.abierto=d.abierto; }
+      estado.ultimoId=null; estado.filtro=null; estado.tiempoAgotado=false;
+      pintarRol(); pintar();
+      document.getElementById("aviso").textContent="Grupo "+SALA+" activo.";
+    });
+  }
+  const btnAbrir=document.getElementById("btnAbrir");
+  if(btnAbrir) btnAbrir.addEventListener("click",async()=>{
+    await fresco();
+    estado.abierto=!estado.abierto;
+    if(estado.abierto) estado.tiempoAgotado=false;
+    await guardar(); pintar();
+  });
+  function pintarRol(){
+    document.getElementById("rol").textContent=(docente?"Docente":"Estudiante")+" · grupo "+SALA;
+  }
+  const btnDocente=document.getElementById("btnDocente");
+  const capaPin=document.getElementById("capaPin");
+  let tecleado="";
+  function pintarPin(){
+    document.querySelectorAll("#puntosPin i").forEach((e,i)=>e.classList.toggle("on",i<tecleado.length));
+  }
+  function abrirPin(){ tecleado=""; pintarPin(); document.getElementById("avisoPin").textContent=""; capaPin.classList.add("abierta"); }
+  function entrarDocente(){
+    docente=true;
+    document.body.classList.remove("estudiante");
+    btnDocente.textContent="Salir del modo docente";
+    const s=document.getElementById("sala"); if(s) s.value=SALA;
+    capaPin.classList.remove("abierta");
+    pintarRol(); pintar();
+  }
+  function salirDocente(){
+    docente=false;
+    document.body.classList.add("estudiante");
+    btnDocente.textContent="Soy el docente";
+    pintarRol(); pintar();
+  }
+  btnDocente.addEventListener("click",()=>{ docente?salirDocente():abrirPin(); });
+  document.getElementById("teclado").addEventListener("click",e=>{
+    const b=e.target.closest("button"); if(!b) return;
+    const k=b.dataset.k;
+    if(k==="cerrar"){ capaPin.classList.remove("abierta"); return; }
+    if(k==="borrar"){ tecleado=tecleado.slice(0,-1); pintarPin(); return; }
+    if(tecleado.length>=4) return;
+    tecleado+=k; pintarPin();
+    if(tecleado.length===4){
+      if(tecleado===PIN){ entrarDocente(); }
+      else{
+        document.getElementById("avisoPin").textContent="PIN incorrecto.";
+        document.querySelectorAll("#teclado button").forEach(x=>x.classList.add("mal"));
+        setTimeout(()=>{ document.querySelectorAll("#teclado button").forEach(x=>x.classList.remove("mal")); tecleado=""; pintarPin(); },700);
+      }
+    }
+  });
+  capaPin.addEventListener("click",e=>{ if(e.target===capaPin) capaPin.classList.remove("abierta"); });
+
+  /* ---------- fase 2 ---------- */
+  async function reclasificar(id,nuevo){
+    await fresco();
+    const p=estado.palabras.find(x=>x.id===id);
+    if(!p) return;
+    p.tipo=nuevo; estado.ultimoId=id;
+    await guardar(); pintar();
+  }
+  document.getElementById("btnFase").addEventListener("click",async()=>{
+    if(estado.palabras.length<4){ document.getElementById("aviso").textContent="Junten al menos 4 palabras antes de reclasificar."; return; }
+    estado.fase=2; await guardar(); pintar();
+    document.getElementById("fraseAutor").focus();
+  });
+
+  async function quitarPalabra(id){
+    const p=estado.palabras.find(x=>x.id===id);
+    if(!p||!confirm('¿Quitar "'+p.texto+'" del bombillo?')) return;
+    await fresco();
+    estado.palabras=estado.palabras.filter(x=>x.id!==id);
+    if(estado.ultimoId===id) estado.ultimoId=null;
+    await guardar(); pintar();
+  }
+
+  /* ---------- cierre escrito ---------- */
+  document.getElementById("btnFrase").addEventListener("click",async()=>{
+    const autor=document.getElementById("fraseAutor").value.trim();
+    const texto=document.getElementById("fraseTexto").value.trim();
+    if(!autor||texto.length<10) return;
+    await fresco();
+    estado.frases.push({id:Date.now()+"",autor,texto,creada:Date.now()});
+    await guardar();
+    document.getElementById("fraseTexto").value="";
+    pintar();
+  });
+
+  /* ---------- filtros ---------- */
+  [["chipMedio","medio"],["chipRecurso","recurso"],["chipDepende","depende"]].forEach(([id,t])=>{
+    const el=document.getElementById(id);
+    const alternar=()=>{
+      estado.filtro = estado.filtro===t ? null : t;
+      document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed","false"));
+      if(estado.filtro) el.setAttribute("aria-pressed","true");
+      pintar();
+    };
+    el.addEventListener("click",alternar);
+    el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();alternar();} });
+  });
+
+  /* ---------- temporizador ---------- */
+  let intervalo=null, restante=0;
+  const elCuenta=document.getElementById("cuenta"), elReloj=document.getElementById("reloj"), btnTiempo=document.getElementById("btnTiempo");
+  function mostrarTiempo(){
+    const m=Math.floor(restante/60), s=restante%60;
+    elCuenta.textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+    elReloj.classList.toggle("rojo",restante<=15&&restante>0);
+  }
+  btnTiempo.addEventListener("click",()=>{
+    if(intervalo){ clearInterval(intervalo); intervalo=null; btnTiempo.textContent="Seguir"; return; }
+    if(restante<=0){ restante=parseInt(document.getElementById("minutos").value,10)*60; estado.tiempoAgotado=false; pintar(); }
+    btnTiempo.textContent="Pausa"; mostrarTiempo();
+    intervalo=setInterval(()=>{
+      restante--; mostrarTiempo();
+      if(restante<=0){
+        clearInterval(intervalo); intervalo=null; btnTiempo.textContent="Reiniciar tiempo";
+        estado.tiempoAgotado=true; estado.abierto=false; guardar(); pintar();
+        document.getElementById("aviso").textContent="Se acabó el tiempo. Pasen a la fase 2.";
+      }
+    },1000);
+  });
+
+  /* ---------- proyector ---------- */
+  function proyectar(on){
+    document.body.classList.toggle("proyector",on);
+    if(on&&document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
+    if(!on&&document.fullscreenElement&&document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+    setTimeout(dibujarNube,350);
+  }
+  document.getElementById("btnProy").addEventListener("click",()=>proyectar(true));
+  document.getElementById("salirProy").addEventListener("click",()=>proyectar(false));
+
+  /* ---------- PNG ---------- */
+  document.getElementById("btnPng").addEventListener("click",()=>{
+    const svg=document.getElementById("bombillo").cloneNode(true);
+    svg.setAttribute("xmlns",SVGNS);
+    svg.querySelectorAll(".apagada").forEach(e=>e.classList.remove("apagada"));
+    const bg=document.createElementNS(SVGNS,"rect");
+    bg.setAttribute("width","460"); bg.setAttribute("height","620"); bg.setAttribute("fill","#0a0620");
+    svg.insertBefore(bg,svg.firstChild);
+    const data=new XMLSerializer().serializeToString(svg);
+    const img=new Image();
+    img.onload=()=>{
+      const c=document.createElement("canvas"); c.width=920; c.height=1240;
+      const x=c.getContext("2d"); x.fillStyle="#0a0620"; x.fillRect(0,0,920,1240);
+      x.drawImage(img,0,0,920,1240);
+      const a=document.createElement("a"); a.href=c.toDataURL("image/png");
+      a.download="bombillo-"+new Date().toISOString().slice(0,10)+".png"; a.click();
+    };
+    img.onerror=()=>alert("No se pudo generar la imagen en este navegador. Usa una captura de pantalla.");
+    img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(data);
+  });
+
+  /* ---------- acta ---------- */
+  function descargarActa(){
+    if(!estado.palabras.length&&!estado.frases.length) return false;
+    const filas=[["Palabra","Clasificación final","Clasificación inicial","Participantes","Razones","Repeticiones"]]
+      .concat(estado.palabras.map(p=>[p.texto,p.tipo,p.tipoInicial,p.autores.map(a=>a.n).join(" / "),p.autores.filter(a=>a.r).map(a=>a.n+": "+a.r).join(" | "),p.reps]));
+    if(estado.frases.length){
+      filas.push([],["Definiciones finales"],["Participante","Definición"]);
+      estado.frases.forEach(f=>filas.push([f.autor,f.texto]));
+    }
+    const csv="\uFEFF"+filas.map(f=>f.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(",")).join("\n");
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+    a.download="acta-bombillo-"+new Date().toISOString().slice(0,10)+".csv"; a.click();
+    return true;
+  }
+  document.getElementById("btnCsv").addEventListener("click",descargarActa);
+
+  /* ---------- reiniciar ---------- */
+  const capaReset=document.getElementById("capaReset"), avisoReset=document.getElementById("avisoReset");
+  document.getElementById("btnReset").addEventListener("click",()=>{
+    const gente=new Set(); estado.palabras.forEach(p=>p.autores.forEach(a=>gente.add(a.n)));
+    document.getElementById("resumenReset").textContent = estado.palabras.length
+      ? "Ahora mismo hay "+estado.palabras.length+" palabras de "+gente.size+" participantes y "+estado.frases.length+" definiciones."
+      : "El bombillo ya está vacío.";
+    avisoReset.textContent=""; capaReset.classList.add("abierta");
+  });
+  async function vaciar(){
+    estado.palabras=[]; estado.frases=[]; estado.fase=1; estado.ultimoId=null; estado.filtro=null; estado.tiempoAgotado=false; estado.abierto=true;
+    document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed","false"));
+    await guardar(); pintar(); capaReset.classList.remove("abierta");
+  }
+  document.getElementById("resetCancelar").addEventListener("click",()=>capaReset.classList.remove("abierta"));
+  document.getElementById("resetGuardar").addEventListener("click",()=>{
+    if(!descargarActa()){ avisoReset.textContent="No hay nada que guardar."; return; }
+    setTimeout(vaciar,700);
+  });
+  document.getElementById("resetVaciar").addEventListener("click",()=>{ if(confirm("Se borra todo el trabajo del grupo. ¿Continuar?")) vaciar(); });
+  document.getElementById("resetFase").addEventListener("click",async()=>{ estado.fase=1; await guardar(); pintar(); capaReset.classList.remove("abierta"); });
+  document.getElementById("resetPuntos").addEventListener("click",()=>{ puntos=0; document.getElementById("puntos").textContent="0"; avisoReset.textContent="Ronda relámpago en cero."; });
+  capaReset.addEventListener("click",e=>{ if(e.target===capaReset) capaReset.classList.remove("abierta"); });
+
+  /* ---------- ronda relámpago ---------- */
+  const BANCO=[
+    {p:"Proyector",t:"medio",r:"Es el canal por el que se transmite la información al grupo."},
+    {p:"Conos",t:"recurso",r:"Material concreto que se manipula para lograr un objetivo de aprendizaje."},
+    {p:"Video tutorial",t:"medio",r:"Soporte audiovisual que vehicula el contenido."},
+    {p:"Pizarra",t:"medio",r:"Superficie-canal para presentar el mensaje."},
+    {p:"Aros",t:"recurso",r:"Material manipulable de la clase de Educación Física."},
+    {p:"Silbato",t:"depende",r:"Como señal de organización es recurso; si con él comunicas un código de instrucciones, actúa como medio."},
+    {p:"Plataforma virtual",t:"medio",r:"Entorno que canaliza la comunicación didáctica."},
+    {p:"Ficha de observación",t:"recurso",r:"Material elaborado con intención pedagógica y evaluativa."},
+    {p:"Cancha o patio",t:"depende",r:"Es espacio; se vuelve recurso cuando lo diseñas con intención didáctica."},
+    {p:"Podcast",t:"medio",r:"Canal sonoro de transmisión del contenido."},
+    {p:"Música de la sesión",t:"depende",r:"Recurso si marca ritmo y motivación; medio si la canción transmite el contenido."},
+    {p:"Balón",t:"recurso",r:"Material concreto que media la experiencia motriz."},
+    {p:"Cuerpo del docente",t:"medio",r:"Demostrar es transmitir: el cuerpo actúa como canal del mensaje."},
+    {p:"Cronómetro",t:"recurso",r:"Instrumento de apoyo para controlar la tarea."},
+    {p:"Grupo de WhatsApp del curso",t:"medio",r:"Canal de comunicación con los estudiantes."},
+    {p:"Infografía impresa",t:"medio",r:"Soporte gráfico que presenta y organiza la información."}
+  ];
+  let puntos=0, actual=null;
+  const capaReto=document.getElementById("capaReto");
+  function nuevaRonda(){
+    actual=BANCO[Math.floor(Math.random()*BANCO.length)];
+    document.getElementById("palabraReto").textContent=actual.p;
+    document.getElementById("veredicto").innerHTML="Decidan en grupo y pulsen.";
+  }
+  document.getElementById("btnReto").addEventListener("click",()=>{ capaReto.classList.add("abierta"); nuevaRonda(); });
+  document.getElementById("btnCerrarReto").addEventListener("click",()=>capaReto.classList.remove("abierta"));
+  document.querySelectorAll(".opciones button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const acierto=b.dataset.r===actual.t;
+      if(acierto){ puntos++; document.getElementById("puntos").textContent=puntos; }
+      document.getElementById("veredicto").innerHTML=
+        (acierto?'<span class="ok">Correcto.</span> ':'<span class="no">Es '+actual.t+'.</span> ')+actual.r+
+        '<br><button class="secundario" style="max-width:220px;margin:12px auto 0" id="btnSig">Siguiente palabra</button>';
+      document.getElementById("btnSig").addEventListener("click",nuevaRonda);
+    });
+  });
+
+  document.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){ capaReset.classList.remove("abierta"); capaReto.classList.remove("abierta"); capaPin.classList.remove("abierta"); if(document.body.classList.contains("proyector")) proyectar(false); }
+  });
+
+  /* ---------- arranque ---------- */
+  (async function iniciar(){
+    document.body.classList.add("estudiante");
+    pintarRol();
+    const inicial=await leer();
+    const est=document.getElementById("estado");
+    if(inicial===null){
+      estado.compartido=false;
+      est.textContent="Modo local: las palabras viven solo en esta pantalla.";
+    }else{
+      estado.compartido=true; estado.palabras=inicial.palabras; estado.frases=inicial.frases; estado.fase=inicial.fase; estado.abierto=inicial.abierto;
+      est.textContent="Tablero compartido · grupo "+SALA;
+    }
+    if(document.fonts&&document.fonts.ready) await document.fonts.ready.catch(()=>{});
+    pintar();
+    if(estado.compartido){
+      setInterval(async()=>{
+        const foco=document.activeElement;
+        if(foco&&foco.tagName==="INPUT"&&foco.value) return;
+        const d=await leer();
+        if(d&&JSON.stringify(d)!==JSON.stringify(instantanea())){
+          estado.palabras=d.palabras; estado.frases=d.frases; estado.fase=d.fase; estado.abierto=d.abierto; pintar();
+        }
+      },5000);
+    }
+    window.addEventListener("resize",()=>dibujarNube());
+  })();
+})();
+</script>
+</body>
+</html>
